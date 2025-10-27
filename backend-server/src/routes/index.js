@@ -14,6 +14,7 @@ const notificationRoutes = require('./notifications');
 const analyticsRoutes = require('./analytics');
 const paymentRoutes = require('./payments');
 const webhookRoutes = require('./webhooks');
+const demandRoutes = require('./demands');
 
 const router = express.Router();
 
@@ -41,5 +42,7 @@ router.use('/notifications', notificationRoutes);
 router.use('/analytics', analyticsRoutes);
 router.use('/payments', paymentRoutes);
 router.use('/webhooks', webhookRoutes);
+// Demand posts between buyers and farmers
+router.use('/demands', demandRoutes);
 
 module.exports = router;

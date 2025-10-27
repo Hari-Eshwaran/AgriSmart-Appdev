@@ -720,6 +720,66 @@ const marketAlertSchema = new mongoose.Schema({
     updatedAt: { type: Date, default: Date.now }
 });
 
+// Demand Model (buyers post demand for commodities, farmers can accept/reject)
+const demandSchema = new mongoose.Schema({
+    buyer: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    commodity: {
+        type: String,
+        required: true
+    },
+    quantity: {
+        type: Number,
+        required: true,
+        min: 0
+    },
+    unit: {
+        type: String,
+        default: 'kg'
+    },
+    location: {
+        address: String,
+        city: String,
+        state: String,
+        pincode: String,
+        coordinates: {
+            lat: Number,
+            lng: Number
+        }
+    },
+    desiredBy: Date,
+    status: {
+        type: String,
+        enum: ['open', 'accepted', 'rejected', 'cancelled', 'fulfilled'],
+        default: 'open'
+    },
+    seller: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
+    priceOffer: {
+        type: Number
+    },
+    notes: String,
+    createdAt: {
+        type: Date,
+        default: Date.now
+    },
+    updatedAt: {
+        type: Date,
+        default: Date.now
+    }
+});
+
+// Ensure updatedAt updates
+demandSchema.pre('save', function(next) {
+    this.updatedAt = Date.now();
+    next();
+});
+
 // Update the updatedAt field before saving
 userSchema.pre('save', function(next) {
     this.updatedAt = Date.now();
@@ -759,6 +819,7 @@ const Wishlist = mongoose.model('Wishlist', wishlistSchema);
 const Review = mongoose.model('Review', reviewSchema);
 const Category = mongoose.model('Category', categorySchema);
 const Notification = mongoose.model('Notification', notificationSchema);
+const Demand = mongoose.model('Demand', demandSchema);
 
 // Payment Models
 const paymentSchema = new mongoose.Schema({
@@ -1111,6 +1172,7 @@ module.exports = {
     Review,
     Category,
     Notification,
+    Demand,
     Payment,
     BlockchainTransaction,
     Refund,

@@ -405,16 +405,20 @@ app.use('*', (req, res) => {
     res.status(404).json({ message: 'Route not found' });
 });
 
-// Start the server
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+// Export app for testing. Start server only when run directly.
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(`Server is running on port ${PORT}`);
 
-    // Initialize payment maintenance jobs
-    if (global.dbConnected) {
-        paymentMaintenance.initializeJobs();
-        paymentMaintenance.startJobs();
-        console.log('✅ Payment maintenance jobs started');
-    } else {
-        console.log('⚠️  Payment maintenance jobs not started (database not connected)');
-    }
-});
+        // Initialize payment maintenance jobs
+        if (global.dbConnected) {
+            paymentMaintenance.initializeJobs();
+            paymentMaintenance.startJobs();
+            console.log('✅ Payment maintenance jobs started');
+        } else {
+            console.log('⚠️  Payment maintenance jobs not started (database not connected)');
+        }
+    });
+}
+
+module.exports = app;
